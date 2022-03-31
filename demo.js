@@ -1,29 +1,30 @@
 const {MongoClient} = require('mongodb')
 
 async function main(){
-
+    
     const uri = "mongodb://hamid:qwerty@localhost/active_tracking";
 
     const client = new MongoClient(uri);
     
     try{
         await client.connect();
+
+        // await findNumberOfDocument(client);
         
         // await listDatabases(client);
         
-        // await findOneListByName(client )
+        // await findOneListByName(client );
         
-        // await findTheNumberOfdocs(client )
+        // await findTheNumberOfdocs(client );
         
-        // await findAllDocs(client )
+        // await findAllDocs(client );
         
-
         // await getTheImei(client);
         
-        // await collectionNumber(client)
+        // await collectionNumber(client);
         
-        await listCollection(client)
-
+        // await listCollection(client);
+        
     } catch(e){
         console.error(e);
     } finally{
@@ -31,7 +32,7 @@ async function main(){
     }
 }
 
-// main().catch(console.error);
+main().catch(console.error);
 
 // async function listDatabases (client){
 //     const databasesList = await client.db().admin().listDatabases();
@@ -42,22 +43,31 @@ async function main(){
 //     });
 // }
    
-const uri = "mongodb://hamid:qwerty@localhost/active_tracking";
-MongoClient.connect(uri, function (err, db){
-    if (err) throw err;
-    let dbat = db.db("active_tracking");
-    dbat.listCollections().toArray(function (err, collectionInfos){
-        //console.log(collectionInfos[0].name);
-        collectionInfos.forEach(elmnt => {
-                    console.log(elmnt.name)
-                
-                });
+// const uri = "mongodb://hamid:qwerty@localhost/active_tracking";
+// MongoClient.connect(uri, function (err, db){
+//     if (err) throw err;
 
-       
-    });
-    db.close;
-});
-        
+//     let dbat = db.db("active_tracking");
+    
+//     dbat.listCollections().toArray(function (err, collectionInfos){
+//         //console.log(collectionInfos[0].name);
+    
+//         collectionInfos.forEach(elmnt => {
+
+//             console.log(elmnt.name)
+
+//         });
+   
+//     });
+//     db.close;
+// });
+      
+
+
+
+
+
+
 // async function findOneListByName(client, nameOfListing){
 //     const result = await client.db("active_tracking").collection("data_3546365045555737401").findOne({});        
 //     if (result) {
@@ -109,3 +119,85 @@ MongoClient.connect(uri, function (err, db){
 //         console.log(e.error) ;
 //     }
 // }
+
+
+
+
+
+// const uri = "mongodb://hamid:qwerty@localhost/active_tracking";
+
+// const client = new MongoClient(uri);
+
+// async function numberOfDocuments() {
+//     try {
+//       await client.connect();
+//       const database = client.db("active_tracking");
+//       const myDocs = database.collection("data_3546365045555737401");
+      
+//       const estimate = await myDocs.estimatedDocumentCount();
+//       console.log(`The number of documents in your collection is: ${estimate}`);
+      
+//     } finally {
+//       await client.close();
+//     }
+//   }
+//   numberOfDocuments().catch(console.dir);
+
+
+
+
+
+
+
+
+
+
+const uri = "mongodb://hamid:qwerty@localhost/active_tracking";
+const client = new MongoClient(uri);
+
+async function numberOfDocuments(nameCol) {
+    var estimate = 0 ;
+    try {
+      await client.connect();
+      const database = client.db("active_tracking");
+      const myDocs = database.collection(nameCol);
+      
+      estimate = await myDocs.estimatedDocumentCount();      
+      //console.log(estimate)
+      //console.log(`The number of documents in your collection is: ${estimate}`);
+    }catch(e){
+        console.log(e);
+    } finally {
+      //await client.close();
+    }
+    return estimate ;
+  }
+  
+
+
+
+
+
+
+  MongoClient.connect(uri, function (err, db){
+      if (err) throw err;
+  
+      const dbat = db.db("active_tracking");
+
+      dbat.listCollections().toArray( function (err, collectionInfos){        
+           try{
+
+                collectionInfos.forEach(async elmnt => { 
+                    count  = await numberOfDocuments(elmnt.name);                                
+                    console.log("la collction " + elmnt.name + " porte le nombre de doc suivant :  " + count) ;
+                });
+
+           }catch(e){
+              console.log(e) ;
+
+           }
+          
+      });
+      db.close;
+  });
+
